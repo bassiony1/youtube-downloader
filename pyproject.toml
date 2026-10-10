@@ -1,6 +1,6 @@
 [project]
 name = "ytd"
-version = "0.10.0"
+version = "0.10.1"
 description = "Download YouTube videos, playlists or audio from the command line or a window"
 readme = "README.md"
 license = "MIT"
