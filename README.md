@@ -61,14 +61,7 @@ uv run ytd-gui                  # the window
 uv run python test_ytd.py       # the tests (offline)
 ```
 
-## Publishing a new version
-
-1. Commit your changes to `main`.
-2. Run `python release.py 1.2.3 "What changed"`.
-
-The script sets the version in `pyproject.toml`, tags `v1.2.3` and pushes. [GitHub Actions](.github/workflows/release.yml) then runs the tests, builds `YouTubeDownloader-Setup.exe` with Inno Setup and publishes it as a release with your notes. Installed apps see the new version on their next start.
-
-To build the installer locally instead, run `python build_installer.py` (needs uv and [Inno Setup 6](https://jrsoftware.org/isinfo.php)).
+`python build_installer.py` builds the Setup (needs [Inno Setup 6](https://jrsoftware.org/isinfo.php)). Releases are published with `python release.py` (see its docstring).
 
 ## Disclaimer
 
