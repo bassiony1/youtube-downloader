@@ -1,0 +1,39 @@
+[project]
+name = "ytd"
+version = "0.10.0"
+description = "Download YouTube videos, playlists or audio from the command line or a window"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Mahmoud Bassiony" }]
+requires-python = ">=3.10"
+dependencies = [
+    # default: yt-dlp-ejs, the scripts that solve YouTube's JS challenges
+    # deno: a JS runtime to run them (yt-dlp finds it in its own install), so no Node/Deno needed on the machine
+    "yt-dlp[default,deno]",
+    "imageio-ffmpeg",   # bundled ffmpeg binary, used to merge video+audio streams
+    "tqdm",
+    "mutagen",  # tags the files split off chapters; yt-dlp[default] brings it anyway
+    "tkinterdnd2",  # drag and drop of links onto the window
+    "pystray",  # the tray icon
+    "pillow",  # the tray icon's picture and the video card's thumbnail (JPEG)
+]
+
+[project.urls]
+Homepage = "https://github.com/bassiony1/youtube-downloader"
+Issues = "https://github.com/bassiony1/youtube-downloader/issues"
+
+[project.scripts]
+ytd = "ytd.cli:main"
+
+[project.gui-scripts]
+ytd-gui = "ytd.gui:main"  # no console window
+
+[build-system]
+requires = ["setuptools>=77"]  # license = "MIT" (SPDX)
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["ytd"]
+
+[tool.setuptools.package-data]
+ytd = ["icon.png", "icon.ico"]

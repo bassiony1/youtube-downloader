@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: windows-latest  # the app uses winreg, ctypes.windll and Windows paths
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Tests (offline)
+        run: uv run --python 3.12 python test_ytd.py
+        env:
+          PYTHONIOENCODING: utf-8
