@@ -172,7 +172,10 @@ def listing(url, more=every_100):
     is then False). channel: the channel's id if the link is a channel's, whose list starts with the newest
     video, else None.
     """
-    with YoutubeDL(BASE_OPTS) as ydl:
+    # A Mix (list=RD...) is YouTube's endless radio of similar videos, which links to videos from the home page and
+    # search carry: just the video. Other lists stay whole: a playlist in search results links to watch?v=..&list=PL..
+    mix = re.search(r'[?&]list=RD', url) is not None
+    with YoutubeDL({**BASE_OPTS, 'noplaylist': mix}) as ydl:
         info = ydl.extract_info(url, download=False, process=False)
         while info.get('_type') in ('url', 'url_transparent'):  # e.g. watch?v=..&list=.. points to the playlist
             info = ydl.extract_info(info['url'], download=False, process=False)

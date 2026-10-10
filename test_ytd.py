@@ -167,7 +167,7 @@ calls, said = [], []
 
 class FakeYDL:
     """Stands in for YoutubeDL: a 5-video playlist; 'gone' is deleted, the others get "not a bot" twice."""
-    def __init__(self, opts): pass
+    def __init__(self, opts): self.opts = opts
     def __enter__(self): return self
     def __exit__(self, *exc): pass
 
@@ -181,6 +181,8 @@ class FakeYDL:
         if url == '@tabs':  # Videos and Shorts tabs: listed under the link's name
             return {'_type': 'playlist', 'title': 'C', 'id': '@tabs', 'channel_id': 'UC1',
                     'entries': [{'_type': 'playlist', 'entries': [{'url': 'v', 'id': 'v'}]}]}
+        if url.startswith('watch?v=m&list='):  # a video in a list: yt-dlp gives the list unless noplaylist
+            return {'id': 'm', 'title': 'M'} if self.opts.get('noplaylist') else self.extract_info(pl, download, process)
         if url == 'gone':
             raise DownloadError('ERROR: [youtube] gone: Video unavailable')
         if url == 'stuck' or calls.count(url) <= 2:
@@ -195,6 +197,8 @@ pl = 'playlist?list=PL1'
 assert ytd.listing(pl, lambda n: n < 3) == ('P', [{'url': f'v{i}', 'id': f'v{i}', 'playlist_index': i + 1}
                                                for i in range(3)], False, None)  # stopped after 3; not a channel
 assert ytd.listing(pl, lambda n: True)[2] is True
+assert ytd.listing('watch?v=m&list=RDm&start_radio=1', lambda n: True) == ('M', [{'id': 'm', 'title': 'M'}], True, None)
+assert ytd.listing('watch?v=m&list=PL1', lambda n: True)[0] == 'P'  # a real playlist stays whole
 assert ytd.listing('@one', lambda n: True)[3] == ytd.listing('@tabs', lambda n: True)[3] == 'UC1'
 entries = [{'url': u} for u in ('a', 'gone', 'b', 'stuck')] + [{'id': 'c', 'formats': []}]
 assert ytd.check(entries, lambda results, n: results) == [{'id': 'a', 'formats': []}, None, {'id': 'b', 'formats': []},
